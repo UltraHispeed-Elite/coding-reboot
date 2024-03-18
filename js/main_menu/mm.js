@@ -27,8 +27,13 @@ var main_menu_sketch = function(sketch) {
             start_button.color = "blue";
         }
 
-        if(start_button.mouse.presses()) {
-            console.log("start game");
+        if(start_button.mouse.pressing()) {
+            gameSwitch("top_down");
+        }
+
+        if(clear === true) {
+            game_clear(sketch);
+            clear = false;
         }
     }
 }
