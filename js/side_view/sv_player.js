@@ -8,6 +8,6 @@ function sv_playerMovement() {
     }
 
     if(kb.presses("space") && sv_player.colliding(platform)) {
-        sv_player.vel.y -= 5;
+        sv_player.vel.y -= 8;
     }
 }

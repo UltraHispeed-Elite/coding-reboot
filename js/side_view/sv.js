@@ -15,11 +15,10 @@ var side_view_sketch = function(sketch) {
         let sv_screen = this.createCanvas(400,400);
         sv_screen.position(0,0);
 
-        this.world.gravity.y = 5;
-
-        allSprites.rotationLock = true;
+        this.world.gravity.y = 20;
 
         sv_player = new this.Sprite(200,200,50,50);
+        sv_player.rotationLock = true;
 
         platform = new this.Sprite(200,400, 800, 25);
         platform.collider = 's';
