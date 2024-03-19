@@ -12,6 +12,9 @@ function findGameState() {
     }
 }
 
+var load = false;
+var saveFile;
+
 var packetSender = {
     "x": 0, // player.x
     "y": 0, // player.y
@@ -55,6 +58,7 @@ function gameSwitch(newScene){
 
 // main menu functions and variables
 var start_button;
+var continue_button;
 
 function mm_setup() {
     new p5(main_menu_sketch);
@@ -67,8 +71,19 @@ function mm_draw() {
         start_button.color = "blue";
     }
 
+    if(continue_button.mouse.hovering()){
+        continue_button.color = "red";
+    }else {
+        continue_button.color = "blue";
+    }
+
     if(start_button.mouse.pressing()) {
-        gameSwitch("game")
+        gameSwitch("game");
+    }
+
+    if(continue_button.mouse.pressing()) {
+        load = true;
+        gameSwitch("game");
     }
 }
 
@@ -77,8 +92,11 @@ var main_menu_sketch = function(sketch) {
         let mm_screen = this.createCanvas(400,400);
         mm_screen.position(0,0);
 
-        start_button = new this.Sprite(200,200,100,50);
-        start_button.text = "Start Game";
+        start_button = new this.Sprite(100,200,100,50);
+        start_button.text = "New Game";
+
+        continue_button = new this.Sprite(300,200,100,50);
+        continue_button.text = "Load Game";
     }
 
     sketch.draw = function() {
@@ -96,6 +114,10 @@ var player;
 
 function game_setup() {
     new p5(game_sketch);
+    if(load === true) {
+        checkSavedGame();
+        load = false;
+    }
     checkPacketData();
 }
 
@@ -105,6 +127,7 @@ function game_draw() {
     }
     player_movement();
     sendData();
+    saveGame();
 }
 
 function player_movement() {
@@ -126,12 +149,21 @@ function player_movement() {
 
     packetSender["x"] = player.x;
     packetSender["y"] = player.y;
+
+    saveFile = packetSender;
 }
 
 function sendData() {
     if(frameCount % 100 === 0) {
         sessionStorage.setItem("packet", JSON.stringify(packetSender));
         console.log("packet sent");
+    }
+}
+
+function saveGame() {
+    if(kb.pressed("m")) {
+        localStorage.setItem("save_file", JSON.stringify(saveFile));
+        console.log("saved")
     }
 }
 
@@ -144,6 +176,18 @@ function checkPacketData() {
         player.y = isPacket["y"];
     }else {
         console.log("no packet available");
+    }
+}
+
+function checkSavedGame() {
+    let find = localStorage.getItem("save_file");
+    let isFile = JSON.parse(find);
+
+    if(isFile !== null) {
+        player.x = isFile["x"];
+        player.y = isFile["y"];
+    }else {
+        console.log("no File available");
     }
 }
 
