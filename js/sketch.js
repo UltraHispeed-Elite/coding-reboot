@@ -20,6 +20,7 @@ var packetSender = {
     "y": 0, // player.y
 }
 
+var see_console = false;
 // core setup and draw functions
 var screen;
 
@@ -37,6 +38,11 @@ function setup() {
 }
 
 function draw() {
+    if(kb.presses('c')) {
+        see_console = true;
+    }else if (kb.presses('v')){
+        see_console = false;
+    }
     if(gameState === "main_menu") {
         mm_draw();
     }else if(gameState === "game") {
@@ -157,14 +163,18 @@ function player_movement() {
 function sendData() {
     if(frameCount % 100 === 0) {
         sessionStorage.setItem("packet", JSON.stringify(packetSender));
-        console.log("packet sent");
+        if(see_console === true) {
+            console.log("packet sent");
+        }
     }
 }
 
 function saveGame() {
     if(kb.pressed("m")) {
         localStorage.setItem("save_file", JSON.stringify(saveFile));
-        console.log("saved")
+        if(see_console === true) {
+            console.log("saved");
+        }
     }
 }
 
@@ -176,7 +186,9 @@ function checkPacketData() {
         player.x = isPacket["x"];
         player.y = isPacket["y"];
     }else {
-        console.log("no packet available");
+        if(see_console === true) {
+            console.log("no packet available");
+        }
     }
 }
 
@@ -188,7 +200,9 @@ function checkSavedGame() {
         player.x = isFile["x"];
         player.y = isFile["y"];
     }else {
-        console.log("no File available");
+        if(see_console === true) {
+            console.log("no File available");
+        }
     }
 }
 
