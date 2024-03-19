@@ -123,6 +123,7 @@ function game_setup() {
 
 function game_draw() {
     if(kb.presses('p')) {
+        sessionStorage.removeItem("packet");
         gameSwitch("main_menu");
     }
     player_movement();
