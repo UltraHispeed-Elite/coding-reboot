@@ -25,7 +25,7 @@ var see_console = false;
 var screen;
 
 function setup() {
-    screen = createCanvas(400,400);
+    screen = createCanvas(800,450);
     screen.position(0,0);
 
     if(gameState === "main_menu") {
@@ -34,6 +34,7 @@ function setup() {
     }else if(gameState === "game") {
         sessionStorage.setItem("game_state", gameState);
         game_setup();
+        ui_setup();
     }
 }
 
@@ -47,6 +48,7 @@ function draw() {
         mm_draw();
     }else if(gameState === "game") {
         game_draw();
+        ui_draw();
     }
 }
 
@@ -95,7 +97,7 @@ function mm_draw() {
 
 var main_menu_sketch = function(sketch) {
     sketch.setup = function() {
-        let mm_screen = this.createCanvas(400,400);
+        let mm_screen = this.createCanvas(800,450);
         mm_screen.position(0,0);
 
         start_button = new this.Sprite(100,200,100,50);
@@ -107,6 +109,9 @@ var main_menu_sketch = function(sketch) {
 
     sketch.draw = function() {
         this.background("black");
+
+        this.camera.x = 200;
+        this.camera.y = 200;
 
         if(clear === true) {
             game_clear(sketch);
@@ -138,6 +143,7 @@ function game_draw() {
 }
 
 function player_movement() {
+
     if(kb.pressing('w')) {
         player.y -= 5;
     }
@@ -208,7 +214,7 @@ function checkSavedGame() {
 
 var game_sketch = function(sketch) {
     sketch.setup = function() {
-        let game_screen = this.createCanvas(400,400);
+        let game_screen = this.createCanvas(800,450);
         game_screen.position(0,0);
 
         player = new this.Sprite(200,200,50,50);
@@ -217,9 +223,39 @@ var game_sketch = function(sketch) {
     sketch.draw = function() {
         this.background("black");
 
+        this.camera.x = player.x;
+        this.camera.y = player.y;
+
         if(clear === true) {
             game_clear(sketch);
             clear = false;
+        }
+    }
+}
+
+// user interface functions and variables
+
+var player_stats;
+
+function ui_setup() {
+    new p5(user_interface_sketch);
+}
+
+function ui_draw() {
+    
+}
+
+var user_interface_sketch = function(sketch) {
+    sketch.setup =  function() {
+        let ui_screen = this.createCanvas(800,450);
+        ui_screen.position(0,0);
+
+        player_stats = new this.Sprite(100,100,25,25);
+    }
+
+    sketch.draw = function() {
+        if(frameCount % 2 === 0) {
+            sketch.clear();
         }
     }
 }
