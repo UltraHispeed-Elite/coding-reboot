@@ -12,6 +12,11 @@ function findGameState() {
     }
 }
 
+var packetSender = {
+    "x": 0, // player.x
+    "y": 0, // player.y
+}
+
 // core setup and draw functions
 var screen;
 
@@ -91,10 +96,15 @@ var player;
 
 function game_setup() {
     new p5(game_sketch);
+    checkPacketData();
 }
 
 function game_draw() {
+    if(kb.presses('p')) {
+        gameSwitch("main_menu");
+    }
     player_movement();
+    sendData();
 }
 
 function player_movement() {
@@ -113,6 +123,28 @@ function player_movement() {
     if(kb.pressing('d')) {
         player.x += 5;
     }
+
+    packetSender["x"] = player.x;
+    packetSender["y"] = player.y;
+}
+
+function sendData() {
+    if(frameCount % 100 === 0) {
+        sessionStorage.setItem("packet", JSON.stringify(packetSender));
+        console.log("packet sent");
+    }
+}
+
+function checkPacketData() {
+    let find = sessionStorage.getItem("packet");
+    let isPacket = JSON.parse(find);
+
+    if(isPacket !== null) {
+        player.x = isPacket["x"];
+        player.y = isPacket["y"];
+    }else {
+        console.log("no packet available");
+    }
 }
 
 var game_sketch = function(sketch) {
@@ -125,5 +157,10 @@ var game_sketch = function(sketch) {
 
     sketch.draw = function() {
         this.background("black");
+
+        if(clear === true) {
+            game_clear(sketch);
+            clear = false;
+        }
     }
 }
